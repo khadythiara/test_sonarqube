@@ -3,9 +3,22 @@ name: Construction d'un projet
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
 
 
 jobs:
+  create-folder:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: whoami
   build:
 
     runs-on: ubuntu-latest
@@ -20,4 +33,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -Dmaven.tests.skip=true -B package --file pom.xml
+      run: mvn -Dmaven.test.skip=true -B package --file pom.xml
