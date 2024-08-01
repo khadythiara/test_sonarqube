@@ -16,9 +16,9 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
-          script: whoami
+          script: mkdir -p /otp/applications/sa
   build:
 
     runs-on: ubuntu-latest
