@@ -1,11 +1,8 @@
 name: Construction d'un projet
-
 on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
-
-
 jobs:
   create-folder:
     name: Build
@@ -20,9 +17,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: mkdir -p /otp/applications/sa
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - name: Téléchargement des sources
       uses: actions/checkout@v4
