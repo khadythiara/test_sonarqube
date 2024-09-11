@@ -1,7 +1,7 @@
 name: Construction d'un projet
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "cron" ]
   workflow_dispatch:
 jobs:
   create-folder:
