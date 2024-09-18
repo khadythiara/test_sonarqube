@@ -28,7 +28,12 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+		<sonar.projectKey>my_project_key</sonar.projectKey>
 	</properties>
+
+
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

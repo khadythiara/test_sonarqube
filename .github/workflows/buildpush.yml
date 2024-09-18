@@ -1,4 +1,4 @@
-name: Build, Push Docker Image and SonarQube Scan
+name: Build, Test, Push Docker Image and SonarQube Scan
 
 on:
   push:
@@ -16,12 +16,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Etape d'analyse SonarQube
-      - name: SonarQube Scan
-        uses: kitabisa/sonarqube-action@master
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
         with:
-          host: ${{ secrets.SONARQUBE_HOST }}
-          login: ${{ secrets.SONARQUBE_TOKEN }}
+          distribution: 'adopt'
+          java-version: '17'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build with Maven and SonarQube Scan
+        run: mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=my_project_key \
+          -Dsonar.host.url=${{ secrets.SONARQUBE_HOST }} \
+          -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
