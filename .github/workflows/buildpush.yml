@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build, Push Docker Image and SonarQube Scan
 
 on:
   push:
@@ -15,6 +15,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      # Etape d'analyse SonarQube
+      - name: SonarQube Scan
+        uses: kitabisa/sonarqube-action@master
+        with:
+          host: ${{ secrets.SONARQUBE_HOST }}
+          login: ${{ secrets.SONARQUBE_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
