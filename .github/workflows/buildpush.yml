@@ -31,7 +31,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Build with Maven and SonarQube Scan
-        run: mvn clean install org.sonarsource.scanner.maven:sonar-maven-plugin:4.0.0.4121:sonar
+        run: mvn clean install sonar:sonar \  
           -Dsonar.projectKey=my_project_key \
           -Dsonar.host.url=${{ secrets.SONARQUBE_HOST }} \
           -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
