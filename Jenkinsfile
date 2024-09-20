@@ -31,7 +31,7 @@ stage('SonarQube analysis') {
             steps {
                 withSonarQubeEnv('sonarqube') {
                     // Lancer l'analyse SonarQube avec la spécification des fichiers compilés
-                    sh './mvnw sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.java.binaries=target/classes'
+                    sh './mvnw sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY}'
                 }
             }
         }
