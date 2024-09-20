@@ -22,6 +22,7 @@ pipeline {
     stage('Building image') {
       steps{
         script {
+          sh 'chmod +x ./mvnw'
           dockerImage = docker.build(imagename, ".")
         }
       }
