@@ -27,6 +27,12 @@ pipeline {
         }
       }
     }
+    stage('Check target directory') {
+    steps {
+        sh 'ls -R target'
+    }
+}
+
 stage('SonarQube analysis') {
     steps {
         withSonarQubeEnv('sonarqube') {
