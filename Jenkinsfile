@@ -27,11 +27,11 @@ pipeline {
         }
       }
     }
-     stage('SonarQube analysis') {
+stage('SonarQube analysis') {
             steps {
-                // Exécuter l'analyse SonarQube
                 withSonarQubeEnv('sonarqube') {
-                    sh './mvnw sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY}'
+                    // Lancer l'analyse SonarQube avec la spécification des fichiers compilés
+                    sh './mvnw sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.java.binaries=target/classes'
                 }
             }
         }
@@ -65,12 +65,5 @@ pipeline {
                 }
             }
         }
-    stage('Remove Unused docker image') {
-      steps{
-        sh "docker rmi $imagename:$BUILD_NUMBER"
-         sh "docker rmi $imagename:latest"
-
-      }
-    }
   }
 }
