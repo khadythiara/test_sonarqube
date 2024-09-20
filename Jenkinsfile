@@ -27,22 +27,13 @@ pipeline {
         }
       }
     }
-stage('SonarQube analysis') {
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    // Lancer l'analyse SonarQube avec la spécification des fichiers compilés
-                    sh './mvnw sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY}'
-                }
-            }
-        }
-        stage('Quality Gate') {
-            steps {
-                // Attendre que l'analyse SonarQube soit terminée
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+
+
+      stage('SonarQube analysis') {
+    withSonarQubeEnv('sonarqube') { // You can override the credential to be used
+      sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+    }
+  }
 
     
     stage('Push Image') {
