@@ -29,7 +29,7 @@ pipeline {
      stage('SonarQube analysis') {
             steps {
                 // Exécuter l'analyse SonarQube
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('sonarqube') {
                     sh './mvnw sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY}'
                 }
             }
