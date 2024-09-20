@@ -1,14 +1,14 @@
 pipeline {
   environment {
-    imagename = "tambedou/sa-devops"
-    registryCredential = 'Dockerhub'
+    imagename = "khadydiagne/push_jenkins"
+    registryCredential = 'simple-java-project'
     dockerImage = ''
   }
   agent any
   stages {
     stage('Cloning Git') {
       steps {
-        git([url: 'https://github.com/Mariamatambedou/sa-devops.git', branch: 'main', credentialsId: 'Github'])
+        git([url: 'https://github.com/khadythiara/jenkins-baamtu.git', branch: 'main'])
 
       }
     }
@@ -19,7 +19,7 @@ pipeline {
         }
       }
     }
-    stage('Deploy Image') {
+    stage('Push Image') {
       steps{
         script {
           docker.withRegistry( '', registryCredential ) {
@@ -30,6 +30,15 @@ pipeline {
         }
       }
     }
+ 
+     stage('Run Docker Container') {
+          steps {
+              script {
+                    // Exécution du conteneur Docker
+                    dockerImage.run("-d -p 8085:80")
+                }
+            }
+        }
     stage('Remove Unused docker image') {
       steps{
         sh "docker rmi $imagename:$BUILD_NUMBER"
