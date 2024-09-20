@@ -3,6 +3,13 @@ pipeline {
     imagename = "khadydiagne/sonar_jenkins"
     registryCredential = 'simple-java-project'
     dockerImage = ''
+
+ // Définir le nom du projet Sonar et les propriétés SonarQube
+        SONAR_PROJECT_KEY = 'test_java'
+        SONAR_HOST_URL = 'http://localhost:9000/'
+        SONAR_TOKEN = credentials('sonarqube') // Jeton d'accès SonarQube stocké dans Jenkins
+    
+    
   }
   agent any
   stages {
@@ -19,6 +26,24 @@ pipeline {
         }
       }
     }
+     stage('SonarQube analysis') {
+            steps {
+                // Exécuter l'analyse SonarQube
+                withSonarQubeEnv('SonarQube') {
+                    sh './mvnw sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY}'
+                }
+            }
+        }
+        stage('Quality Gate') {
+            steps {
+                // Attendre que l'analyse SonarQube soit terminée
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+    
     stage('Push Image') {
       steps{
         script {
