@@ -1,5 +1,5 @@
 # Étape 1 : Utiliser une image Maven officielle pour construire le projet
-FROM maven:3.8.6-eclipse-temurin-17 AS build
+FROM maven:3.9.9-eclipse-temurin-17 AS build
 
 # Définir le répertoire de travail
 WORKDIR /app
@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Exposer le port sur lequel l'application écoute
-EXPOSE 8080
+EXPOSE 8086
 
 # Démarrer l'application Java
 ENTRYPOINT ["java", "-jar", "app.jar"]
