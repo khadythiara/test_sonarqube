@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    imagename = "khadydiagne/push_jenkins"
+    imagename = "khadydiagne/sonar_jenkins"
     registryCredential = 'simple-java-project'
     dockerImage = ''
   }
@@ -8,7 +8,7 @@ pipeline {
   stages {
     stage('Cloning Git') {
       steps {
-        git([url: 'https://github.com/khadythiara/jenkins-baamtu.git', branch: 'main'])
+        git([url: 'https://github.com/khadythiara/test_sonarqube.git', branch: 'main'])
 
       }
     }
@@ -35,7 +35,7 @@ pipeline {
           steps {
               script {
                     // Exécution du conteneur Docker
-                    dockerImage.run("-d -p 8085:80")
+                    dockerImage.run("-d -p 8086:80")
                 }
             }
         }
