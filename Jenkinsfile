@@ -27,15 +27,13 @@ pipeline {
         }
       }
     }
-
-
-      stage('SonarQube analysis') {
-    withSonarQubeEnv('sonarqube') { // You can override the credential to be used
-      sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+stage('SonarQube analysis') {
+    steps {
+        withSonarQubeEnv('sonarqube') {
+            sh './mvnw sonar:sonar -Dsonar.projectKey=test_java -Dsonar.java.binaries=target/classes'
+        }
     }
-  }
-
-    
+}
     stage('Push Image') {
       steps{
         script {
