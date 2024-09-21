@@ -56,7 +56,7 @@ stage('SonarQube analysis') {
           steps {
               script {
                     // Exécution du conteneur Docker
-                    dockerImage.run("-d -p 8086:80")
+                    dockerImage.run("-d -p 8086:8086")
                 }
             }
         }
