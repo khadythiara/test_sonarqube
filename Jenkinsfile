@@ -53,6 +53,7 @@ pipeline {
         success {
             // Envoie d'un email en cas de succès
             emailext(
+                to: 'khady.diagne@baamtu.com',
                 subject: "SonarQube Analysis Succeeded: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
                 body: """<p>La tâche SonarQube a réussi pour le projet ${SONAR_PROJECT_KEY}.</p>
                          <p>Voir les résultats ici : ${SONAR_HOST_URL}dashboard?id=${SONAR_PROJECT_KEY}</p>""",
@@ -62,6 +63,7 @@ pipeline {
         failure {
             // Envoie d'un email en cas d'échec
             emailext(
+                to: 'khady.diagne@baamtu.com',
                 subject: "SonarQube Analysis Failed: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
                 body: """<p>La tâche SonarQube a échoué pour le projet ${SONAR_PROJECT_KEY}.</p>
                          <p>Voir les détails dans la console de Jenkins.</p>""",
