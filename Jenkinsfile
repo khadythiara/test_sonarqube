@@ -10,21 +10,25 @@ pipeline {
         SONAR_TOKEN = credentials('sonarqube') // Jeton SonarQube
         //WEBHOOK_URL = 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0' // URL du webhook à configurer
     }
+    
     agent any
+
     stages {
         stage('Cloning Git') {
             steps {
                 git([url: 'https://github.com/khadythiara/test_sonarqube.git', branch: 'main'])
             }
         }
+
         stage('Building image') {
-            steps{
+            steps {
                 script {
                     sh 'chmod +x ./mvnw'
                     dockerImage = docker.build(imagename, ".")
                 }
             }
         }
+
         stage('SonarQube analysis') {
             steps {
                 withSonarQubeEnv('sonarqube') {
@@ -32,16 +36,18 @@ pipeline {
                 }
             }
         }
+
         stage('Push Image') {
-            steps{
+            steps {
                 script {
-                    docker.withRegistry( '', registryCredential ) {
+                    docker.withRegistry('', registryCredential) {
                         dockerImage.push("$BUILD_NUMBER")
                         dockerImage.push('latest')
                     }
                 }
             }
         }
+
         stage('Run Docker Container') {
             steps {
                 script {
@@ -49,7 +55,8 @@ pipeline {
                 }
             }
         }
-stage('Send Webhook Notification') {
+
+        stage('Send Webhook Notification') {
             steps {
                 script {
                     httpRequest(
@@ -61,6 +68,8 @@ stage('Send Webhook Notification') {
                 }
             }
         }
+    }
+
     post {
         success {
             emailext(
@@ -70,6 +79,7 @@ stage('Send Webhook Notification') {
                          <p>Voir les résultats ici : ${SONAR_HOST_URL}dashboard?id=${SONAR_PROJECT_KEY}</p>"""
             )
         }
+
         failure {
             emailext(
                 to: 'khady.diagne@baamtu.com',
@@ -78,6 +88,5 @@ stage('Send Webhook Notification') {
                          <p>Voir les détails dans la console de Jenkins.</p>"""
             )
         }
-}
-}
     }
+}
