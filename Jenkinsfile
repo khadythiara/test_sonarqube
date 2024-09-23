@@ -69,7 +69,7 @@ stage('Remove Unused docker image') {
                         httpMode: 'POST',
                         url: WEBHOOK_URL,
                         contentType: 'APPLICATION_JSON',
-                        requestBody: '{"text": "Build #${env.BUILD_NUMBER} finished successfully!"}',
+                        requestBody: '{"text": "Build test_sonar_jenkins finished successfully!"}',
                         validResponseCodes: '100:499'
                     )
                     echo "Response: ${response}"
