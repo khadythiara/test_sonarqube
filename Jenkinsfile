@@ -8,7 +8,7 @@ pipeline {
         SONAR_PROJECT_KEY = 'test_java'
         SONAR_HOST_URL = 'http://localhost:9000/'
         SONAR_TOKEN = credentials('sonarqube') // Jeton SonarQube
-        //WEBHOOK_URL = 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0' // URL du webhook à configurer
+        WEBHOOK_URL = 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0' // URL du webhook
     }
     
     agent any
@@ -56,21 +56,21 @@ pipeline {
             }
         }
 
-stage('Send Webhook Notification') {
-    steps {
-        script {
-            def response = httpRequest(
-                httpMode: 'POST',
-                url: 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0',
-                contentType: 'APPLICATION_JSON',
-                requestBody: '{"text": "Build finished successfully!"}',
-                validResponseCodes: '100:499'  // Adjust range to capture more response codes
-            )
-            echo "Response: ${response}"
+        stage('Send Webhook Notification') {
+            steps {
+                script {
+                    def response = httpRequest(
+                        httpMode: 'POST',
+                        url: WEBHOOK_URL,
+                        contentType: 'APPLICATION_JSON',
+                        requestBody: '{"text": "Build #${env.BUILD_NUMBER} finished successfully!"}',
+                        validResponseCodes: '100:499'
+                    )
+                    echo "Response: ${response}"
+                }
+            }
         }
     }
-}
-}
 
     post {
         success {
@@ -92,4 +92,3 @@ stage('Send Webhook Notification') {
         }
     }
 }
-    }
