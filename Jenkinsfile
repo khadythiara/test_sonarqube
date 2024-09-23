@@ -3,12 +3,12 @@ pipeline {
         imagename = "khadydiagne/sonar_jenkins"
         registryCredential = 'simple-java-project'
         dockerImage = ''
-        
+
         // Propriétés SonarQube
         SONAR_PROJECT_KEY = 'test_java'
         SONAR_HOST_URL = 'http://localhost:9000/'
-        SONAR_TOKEN = credentials('sonarqube')
-        WEBHOOK_URL = 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0'
+        SONAR_TOKEN = credentials('sonarqube') // Jeton SonarQube
+        WEBHOOK_URL = 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0' // URL du webhook
     }
     
     agent any
@@ -55,36 +55,31 @@ pipeline {
                 }
             }
         }
-    }
+stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi -f $imagename:$BUILD_NUMBER"
+         sh "docker rmi -f $imagename:latest"
 
-    // Envoyer une notification au début du build
-    post {
-        always {
-            script {
-                def response = httpRequest(
-                    httpMode: 'POST',
-                    url: WEBHOOK_URL,
-                    contentType: 'APPLICATION_JSON',
-                    requestBody: '{"status": "Build started for ${env.JOB_NAME} Build #${env.BUILD_NUMBER}"}',
-                    validResponseCodes: '100:499'
-                )
-                echo "Response: ${response}"
+      }
+    }
+        stage('Send Webhook Notification') {
+            steps {
+                script {
+                    def response = httpRequest(
+                        httpMode: 'POST',
+                        url: WEBHOOK_URL,
+                        contentType: 'APPLICATION_JSON',
+                        requestBody: '{"status": "Build #${env.BUILD_NUMBER} finished successfully!"}',
+                        validResponseCodes: '100:499'
+                    )
+                    echo "Response: ${response}"
+                }
             }
         }
+    }
 
-        // Envoyer une notification à la fin du build en cas de succès
+    post {
         success {
-            script {
-                def response = httpRequest(
-                    httpMode: 'POST',
-                    url: WEBHOOK_URL,
-                    contentType: 'APPLICATION_JSON',
-                    requestBody: '{"status": "Build finished successfully for ${env.JOB_NAME} Build #${env.BUILD_NUMBER}"}',
-                    validResponseCodes: '100:499'
-                )
-                echo "Response: ${response}"
-            }
-
             emailext(
                 to: 'khady.diagne@baamtu.com',
                 subject: "SonarQube Analysis Succeeded: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
@@ -93,19 +88,7 @@ pipeline {
             )
         }
 
-        // Envoyer une notification à la fin du build en cas d'échec
         failure {
-            script {
-                def response = httpRequest(
-                    httpMode: 'POST',
-                    url: WEBHOOK_URL,
-                    contentType: 'APPLICATION_JSON',
-                    requestBody: '{"text": "Build failed for ${env.JOB_NAME} Build #${env.BUILD_NUMBER}"}',
-                    validResponseCodes: '100:499'
-                )
-                echo "Response: ${response}"
-            }
-
             emailext(
                 to: 'khady.diagne@baamtu.com',
                 subject: "SonarQube Analysis Failed: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
