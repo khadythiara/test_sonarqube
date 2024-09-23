@@ -78,6 +78,6 @@ stage('Send Webhook Notification') {
                          <p>Voir les détails dans la console de Jenkins.</p>"""
             )
         }
+}
+}
     }
-}
-}
