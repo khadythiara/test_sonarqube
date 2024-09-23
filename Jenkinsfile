@@ -31,7 +31,9 @@ pipeline {
 stage('SonarQube analysis') {
     steps {
         withSonarQubeEnv('sonarqube') {
-            sh './mvnw sonar:sonar -Dsonar.projectKey=test_java -Dsonar.java.binaries=target/sonar'
+            //sh './mvnw sonar:sonar -Dsonar.projectKey=test_java -Dsonar.java.binaries=target/sonar'
+          sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.9.1746:sonar'
+  
         }
     }
 }
