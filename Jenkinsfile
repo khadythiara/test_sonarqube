@@ -4,11 +4,11 @@ pipeline {
         registryCredential = 'simple-java-project'
         dockerImage = ''
 
-        // Définir le nom du projet Sonar et les propriétés SonarQube
+        // Propriétés SonarQube
         SONAR_PROJECT_KEY = 'test_java'
         SONAR_HOST_URL = 'http://localhost:9000/'
-        SONAR_TOKEN = credentials('sonarqube') // Jeton d'accès SonarQube stocké dans Jenkins
-        WEBHOOK_URL = 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0'
+        SONAR_TOKEN = credentials('sonarqube') // Jeton SonarQube
+        WEBHOOK_URL = 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0' // URL du webhook à configurer
     }
     agent any
     stages {
@@ -68,26 +68,22 @@ pipeline {
                 }
             }
         }
-    
+    }
     post {
         success {
-            // Envoie d'un email en cas de succès
             emailext(
                 to: 'khady.diagne@baamtu.com',
                 subject: "SonarQube Analysis Succeeded: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
                 body: """<p>La tâche SonarQube a réussi pour le projet ${SONAR_PROJECT_KEY}.</p>
-                         <p>Voir les résultats ici : ${SONAR_HOST_URL}dashboard?id=${SONAR_PROJECT_KEY}</p>""",
-                recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'CulpritsRecipientProvider']]
+                         <p>Voir les résultats ici : ${SONAR_HOST_URL}dashboard?id=${SONAR_PROJECT_KEY}</p>"""
             )
         }
         failure {
-            // Envoie d'un email en cas d'échec
             emailext(
                 to: 'khady.diagne@baamtu.com',
                 subject: "SonarQube Analysis Failed: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
                 body: """<p>La tâche SonarQube a échoué pour le projet ${SONAR_PROJECT_KEY}.</p>
-                         <p>Voir les détails dans la console de Jenkins.</p>""",
-                recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'CulpritsRecipientProvider']]
+                         <p>Voir les détails dans la console de Jenkins.</p>"""
             )
         }
     }
