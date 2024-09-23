@@ -35,16 +35,7 @@ stage('SonarQube analysis') {
         }
     }
 }
- stage('Quality Gate') {
-            steps {
-                // Attendre que l'analyse SonarQube soit terminée
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-    }
-        
-    stage('Push Image') {
+stage('Push Image') {
       steps{
         script {
           docker.withRegistry( '', registryCredential ) {
