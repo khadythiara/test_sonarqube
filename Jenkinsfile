@@ -56,19 +56,21 @@ pipeline {
             }
         }
 
-        stage('Send Webhook Notification') {
-            steps {
-                script {
-                    httpRequest(
-                        httpMode: 'POST',
-                        url: 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0',
-                        contentType: 'APPLICATION_JSON',
-                        requestBody: '{"status": "Build finished"}'
-                    )
-                }
-            }
+stage('Send Webhook Notification') {
+    steps {
+        script {
+            def response = httpRequest(
+                httpMode: 'POST',
+                url: 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0',
+                contentType: 'APPLICATION_JSON',
+                requestBody: '{"text": "Build finished successfully!"}',
+                validResponseCodes: '100:499'  // Adjust range to capture more response codes
+            )
+            echo "Response: ${response}"
         }
     }
+}
+
 
     post {
         success {
