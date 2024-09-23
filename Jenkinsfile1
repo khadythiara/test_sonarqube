@@ -21,7 +21,7 @@ pipeline {
                         httpMode: 'POST',
                         url: WEBHOOK_URL,
                         contentType: 'APPLICATION_JSON',
-                        requestBody: '{"text": "Build #${env.BUILD_NUMBER} started for job ${env.JOB_NAME}!"}',
+                        requestBody: '{"text": "Build demarrer par khady diagne!"}',
                         validResponseCodes: '100:499'
                     )
                     echo "Response for start notification: ${response}"
@@ -79,7 +79,7 @@ pipeline {
                     httpMode: 'POST',
                     url: WEBHOOK_URL,
                     contentType: 'APPLICATION_JSON',
-                    requestBody: '{"text": "Build #${env.BUILD_NUMBER} finished successfully for job ${env.JOB_NAME}!"}',
+                    requestBody: '{"text": "Build terminé!"}',
                     validResponseCodes: '100:499'
                 )
                 echo "Response for success notification: ${response}"
