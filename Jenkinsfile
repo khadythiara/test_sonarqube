@@ -63,7 +63,8 @@ pipeline {
                         httpMode: 'POST',
                         url: WEBHOOK_URL,
                         contentType: 'APPLICATION_JSON',
-                        requestBody: '{"text": "Build #${env.BUILD_NUMBER} finished successfully!"}',
+                        requestBody: '{"text": "Build test_jenkins_sonar finished successfully!"}',
+                        //requestBody: '{"text": "Build #${env.BUILD_NUMBER} finished successfully!"}',
                         validResponseCodes: '100:499'
                     )
                     echo "Response: ${response}"
