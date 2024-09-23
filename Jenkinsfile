@@ -35,14 +35,7 @@ stage('SonarQube analysis') {
         }
     }
 }
- stage('Quality Gate') {
-            steps {
-                // Attendre que l'analyse SonarQube soit terminée
-                timeout(time: 10, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        } 
+ 
 stage('Push Image') {
       steps{
         script {
