@@ -70,7 +70,7 @@ stage('Send Webhook Notification') {
         }
     }
 }
-
+}
 
     post {
         success {
