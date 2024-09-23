@@ -49,7 +49,6 @@ pipeline {
                 }
             }
         }
-    }
         stage('Webhook Notification') {
             steps {
                 script {
