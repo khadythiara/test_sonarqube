@@ -8,7 +8,7 @@ pipeline {
         SONAR_PROJECT_KEY = 'test_java'
         SONAR_HOST_URL = 'http://localhost:9000/'
         SONAR_TOKEN = credentials('sonarqube') // Jeton SonarQube
-        WEBHOOK_URL = 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0' // URL du webhook à configurer
+        //WEBHOOK_URL = 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0' // URL du webhook à configurer
     }
     agent any
     stages {
@@ -49,26 +49,18 @@ pipeline {
                 }
             }
         }
-        stage('Webhook Notification') {
+stage('Send Webhook Notification') {
             steps {
                 script {
-                    def payload = [
-                        "project": SONAR_PROJECT_KEY,
-                        "status": currentBuild.currentResult,
-                        "buildNumber": BUILD_NUMBER,
-                        "buildUrl": env.BUILD_URL,
-                        "sonarUrl": "${SONAR_HOST_URL}dashboard?id=${SONAR_PROJECT_KEY}"
-                    ]
                     httpRequest(
                         httpMode: 'POST',
-                        url: "${WEBHOOK_URL}",
+                        url: 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0',
                         contentType: 'APPLICATION_JSON',
-                        requestBody: groovy.json.JsonOutput.toJson(payload)
+                        requestBody: '{"status": "Build finished"}'
                     )
                 }
             }
         }
-    }
     post {
         success {
             emailext(
