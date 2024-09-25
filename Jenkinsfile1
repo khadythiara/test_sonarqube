@@ -21,7 +21,7 @@ pipeline {
                         httpMode: 'POST',
                         url: WEBHOOK_URL,
                         contentType: 'APPLICATION_JSON',
-                        requestBody: '{"text": "Build jenkins_sonarqube demarrer par khady diagne!"}',
+                        requestBody: '{"text": "Build jenkins_sonarqube status: demarrer par khady diagne!"}',
                         validResponseCodes: '100:499'
                     )
                     echo "Response for start notification: ${response}"
@@ -86,7 +86,7 @@ pipeline {
                     httpMode: 'POST',
                     url: WEBHOOK_URL,
                     contentType: 'APPLICATION_JSON',
-                    requestBody: '{"text": "Build termine avec succes!"}',
+                    requestBody: '{"text": "Build jenkins_sonarqube status: termine avec succes!"}',
                     validResponseCodes: '100:499'
                 )
                 echo "Response for success notification: ${response}"
@@ -105,7 +105,7 @@ pipeline {
                     httpMode: 'POST',
                     url: WEBHOOK_URL,
                     contentType: 'APPLICATION_JSON',
-                    requestBody: '{"text": "Build #${BUILD_NUMBER} failed for job ${JOB_NAME}."}',
+                    requestBody: '{"text": "Build jenkins_sonarqube status: build #$BUILD_NUMBER failed for job $JOB_NAME."}',
                     validResponseCodes: '100:499'
                 )
                 echo "Response for failure notification: ${response}"
