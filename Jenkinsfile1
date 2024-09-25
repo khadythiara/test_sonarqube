@@ -105,7 +105,7 @@ pipeline {
                     httpMode: 'POST',
                     url: WEBHOOK_URL,
                     contentType: 'APPLICATION_JSON',
-                    requestBody: '{"text": "Build jenkins_sonarqube status: build echoué."}',
+                    requestBody: '{"text": "Build jenkins_sonarqube status: build echoue."}',
                     validResponseCodes: '100:499'
                 )
                 echo "Response for failure notification: ${response}"
