@@ -62,11 +62,18 @@ pipeline {
                 }
             }
         }
-
+        stage('stop Docker Container') {
+            steps {
+                script {
+                sh "docker stop -f test_sonar"
+                sh "docker rm -f test_sonar"
+                }
+            }
+        }
         stage('Run Docker Container') {
             steps {
                 script {
-                    dockerImage.run("-d -p 8086:8086")
+                    dockerImage.run("--name test_sonar -d -p 8086:8086")
                 }
             }
         }
