@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        imagename = "khadydiagne/sonar_jenkins"
+        imagename = "khadydiagne/sonar"
         registryCredential = 'simple-java-project'
         dockerImage = ''
 
