@@ -3,12 +3,11 @@ pipeline {
         imagename = "khadydiagne/sonar"
         registryCredential = 'simple-java-project'
         dockerImage = ''
-
-        // Propriétés SonarQube
+        
         SONAR_PROJECT_KEY = 'test_java'
         SONAR_HOST_URL = 'http://localhost:9000/'
-        SONAR_TOKEN = credentials('sonarqube') // Jeton SonarQube
-        WEBHOOK_URL = 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0' // URL du webhook
+        SONAR_TOKEN = credentials('sonarqube')
+        WEBHOOK_URL = 'https://chat.googleapis.com/v1/spaces/AAAAF-fYuRc/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=YquNatic_vtgLs662cM1OUCjqcwb_gZ7EIxBcWLRbB0'
     }
     
     agent any
@@ -21,7 +20,7 @@ pipeline {
                         httpMode: 'POST',
                         url: WEBHOOK_URL,
                         contentType: 'APPLICATION_JSON',
-                        requestBody: '{"text": " 🚀Build jenkins_sonarqube status: demarrer par khady diagne!"}',
+                        requestBody: '{"text": "🚀 Build jenkins_sonarqube status: démarré par Khady Diagne!"}',
                         validResponseCodes: '100:499'
                     )
                     echo "Response for start notification: ${response}"
@@ -35,19 +34,25 @@ pipeline {
             }
         }
 
-        stage('Building image') {
+        stage('SonarQube Initial Analysis') {
             steps {
-                script {
-                    sh 'chmod +x ./mvnw'
-                    dockerImage = docker.build(imagename, ".")
+                withSonarQubeEnv('sonarqube') {
+                    sh './mvnw clean verify sonar:sonar -Dsonar.projectKey=test_java'
                 }
             }
         }
 
-        stage('SonarQube analysis') {
+        stage('Compile Project') {
             steps {
-                withSonarQubeEnv('sonarqube') {
-                    sh './mvnw sonar:sonar -Dsonar.projectKey=test_java -Dsonar.java.binaries=target/sonar'
+                sh './mvnw clean compile'
+            }
+        }
+
+        stage('Building Image') {
+            steps {
+                script {
+                    sh 'chmod +x ./mvnw'
+                    dockerImage = docker.build(imagename, ".")
                 }
             }
         }
@@ -62,11 +67,12 @@ pipeline {
                 }
             }
         }
-        stage('stop Docker Container') {
+
+        stage('Stop Docker Container') {
             steps {
                 script {
-                sh "docker stop test_sonar"
-                sh "docker rm -f test_sonar"
+                    sh "docker stop test_sonar || true"
+                    sh "docker rm -f test_sonar || true"
                 }
             }
         }
@@ -78,13 +84,13 @@ pipeline {
                 }
             }
         }
- stage('Remove Unused docker image') {
-      steps{
-        sh "docker rmi -f $imagename:$BUILD_NUMBER"
-         sh "docker rmi -f $imagename:latest"
 
-      }
-    }
+        stage('Remove Unused Docker Images') {
+            steps {
+                sh "docker rmi -f $imagename:$BUILD_NUMBER"
+                sh "docker rmi -f $imagename:latest"
+            }
+        }
     }
 
     post {
@@ -94,7 +100,7 @@ pipeline {
                     httpMode: 'POST',
                     url: WEBHOOK_URL,
                     contentType: 'APPLICATION_JSON',
-                    requestBody: '{"text":"✅ Build jenkins_sonarqube status: termine avec succes!"}',
+                    requestBody: '{"text":"✅ Build jenkins_sonarqube status: terminé avec succès!"}',
                     validResponseCodes: '100:499'
                 )
                 echo "Response for success notification: ${response}"
@@ -113,7 +119,7 @@ pipeline {
                     httpMode: 'POST',
                     url: WEBHOOK_URL,
                     contentType: 'APPLICATION_JSON',
-                    requestBody: '{"text":" ❌ Build jenkins_sonarqube status: build echoue."}',
+                    requestBody: '{"text":"❌ Build jenkins_sonarqube status: échoué."}',
                     validResponseCodes: '100:499'
                 )
                 echo "Response for failure notification: ${response}"
@@ -122,7 +128,7 @@ pipeline {
                 to: 'khady.diagne@baamtu.com',
                 subject: "SonarQube Analysis Failed: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
                 body: """<p>La tâche SonarQube a échoué pour le projet ${SONAR_PROJECT_KEY}.</p>
-                         <p>Voir les détails dans la console de Jenkins.</p>"""
+                         <p>Voir les détails dans la console Jenkins.</p>"""
             )
         }
     }
