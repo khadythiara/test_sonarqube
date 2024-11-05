@@ -30,14 +30,14 @@ pipeline {
 
         stage('Compile Project') {
             steps {
-                sh './mvnw clean compile'
+                sh 'mvnw clean compile'
             }
         }
 
         stage('Building Image') {
             steps {
                 script {
-                    sh 'chmod +x ./mvnw'
+                    sh 'chmod +x mvnw'
                     dockerImage = docker.build(imagename, ".")
                 }
             }
