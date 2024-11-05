@@ -4,6 +4,7 @@ pipeline {
     registryCredential = 'docker'
     SONAR_PROJECT_KEY = 'test_java'
     SONAR_HOST_URL = 'http://192.168.230.128:9000'
+    SONAR_TOKEN = credentials('sonarqube') // Jeton d'accès SonarQube stocké dans Jenkins
   }
   agent any
   stages {
@@ -57,8 +58,5 @@ pipeline {
         }
       }
     }
-  }
-  environment {
-    SONAR_TOKEN = credentials('sonarqube') // Jeton d'accès SonarQube
   }
 }
