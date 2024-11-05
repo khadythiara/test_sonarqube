@@ -20,24 +20,32 @@ pipeline {
             }
         }
 
+        stage('Prepare Maven Wrapper') {
+            steps {
+                script {
+                    // Assurez-vous que le wrapper Maven est exécutable
+                    sh 'chmod +x mvnw'
+                }
+            }
+        }
+
         stage('SonarQube Initial Analysis') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh './mvnw clean verify sonar:sonar -Dsonar.projectKey=test_java'
+                    sh './mvnw clean verify sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY}'
                 }
             }
         }
 
         stage('Compile Project') {
             steps {
-                sh 'mvnw clean compile'
+                sh './mvnw clean compile'
             }
         }
 
         stage('Building Image') {
             steps {
                 script {
-                    sh 'chmod +x mvnw'
                     dockerImage = docker.build(imagename, ".")
                 }
             }
@@ -73,8 +81,10 @@ pipeline {
 
         stage('Remove Unused Docker Images') {
             steps {
-                sh "docker rmi -f $imagename:$BUILD_NUMBER"
-                sh "docker rmi -f $imagename:latest"
+                script {
+                    sh "docker rmi -f ${imagename}:${BUILD_NUMBER}"
+                    sh "docker rmi -f ${imagename}:latest"
+                }
             }
         }
     }
@@ -91,7 +101,7 @@ pipeline {
                 )
                 echo "Response for success notification: ${response}"
             }
-
+        }
         failure {
             script {
                 def response = httpRequest(
@@ -103,8 +113,8 @@ pipeline {
                 )
                 echo "Response for failure notification: ${response}"
             }
-           
         }
     }
 }
-}
+
+*$*
