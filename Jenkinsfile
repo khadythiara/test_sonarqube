@@ -3,16 +3,15 @@ pipeline {
     imagename = "khadydiagne/k8s_jenkins"
     registryCredential = 'docker'
     SONAR_PROJECT_KEY = 'test_java'
-    SONAR_HOST_URL = 'http://localhost:9000/'
-    // Définir le jeton d'accès SonarQube depuis Jenkins
-    SONAR_TOKEN = credentials('sonarqube') // Définir SONAR_TOKEN ici pour SonarQube
+    SONAR_HOST_URL = 'http://192.168.230.128:9000'
   }
   agent any
   stages {
     stage('Cloning Git') {
       steps {
         git([url: 'https://github.com/khadythiara/test_sonarqube.git', branch: 'main'])
-        // Rendre mvnw exécutable immédiatement après le clonage
+        // Vérifiez la présence de `mvnw` et lui donner les permissions d'exécution
+        sh 'ls -l' // Lister les fichiers pour vérifier si `mvnw` est présent
         sh 'chmod +x ./mvnw'
       }
     }
@@ -20,6 +19,7 @@ pipeline {
     stage('SonarQube analysis') {
       steps {
         withSonarQubeEnv('sonarqube') {
+          // Exécutez `mvnw` pour SonarQube
           sh './mvnw sonar:sonar -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.java.binaries=src'
         }
       }
@@ -58,5 +58,7 @@ pipeline {
       }
     }
   }
+  environment {
+    SONAR_TOKEN = credentials('sonarqube') // Jeton d'accès SonarQube
+  }
 }
-
