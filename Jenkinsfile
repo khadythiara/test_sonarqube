@@ -17,15 +17,6 @@ pipeline {
       }
     }
 
-    stage('SonarQube analysis') {
-      steps {
-        withSonarQubeEnv('sonarqube') {
-          // Exécutez `mvnw` pour SonarQube
-          sh './mvnw sonar:sonar -Dsonar.projectKey=$SONAR_PROJECT_KEY -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.java.binaries=src'
-        }
-      }
-    }
-
     stage('Building image') {
       steps {
         script {
