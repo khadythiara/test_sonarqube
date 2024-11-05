@@ -1,7 +1,7 @@
 pipeline {
     environment {
         imagename = "khadydiagne/sonar"
-        registryCredential = 'simple-java-project'
+        registryCredential = 'docker'
         dockerImage = ''
         
         SONAR_PROJECT_KEY = 'test_java'
@@ -13,20 +13,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Send Webhook Notification - Build Started') {
-            steps {
-                script {
-                    def response = httpRequest(
-                        httpMode: 'POST',
-                        url: WEBHOOK_URL,
-                        contentType: 'APPLICATION_JSON',
-                        requestBody: '{"text": "🚀 Build jenkins_sonarqube status: démarré par Khady Diagne!"}',
-                        validResponseCodes: '100:499'
-                    )
-                    echo "Response for start notification: ${response}"
-                }
-            }
-        }
 
         stage('Cloning Git') {
             steps {
@@ -34,10 +20,19 @@ pipeline {
             }
         }
 
+        stage('Prepare Maven Wrapper') {
+            steps {
+                script {
+                    // Assurez-vous que le wrapper Maven est exécutable
+                    sh 'chmod +x mvnw'
+                }
+            }
+        }
+
         stage('SonarQube Initial Analysis') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh './mvnw clean verify sonar:sonar -Dsonar.projectKey=test_java'
+                    sh './mvnw clean verify sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY}'
                 }
             }
         }
@@ -51,7 +46,6 @@ pipeline {
         stage('Building Image') {
             steps {
                 script {
-                    sh 'chmod +x ./mvnw'
                     dockerImage = docker.build(imagename, ".")
                 }
             }
@@ -87,8 +81,10 @@ pipeline {
 
         stage('Remove Unused Docker Images') {
             steps {
-                sh "docker rmi -f $imagename:$BUILD_NUMBER"
-                sh "docker rmi -f $imagename:latest"
+                script {
+                    sh "docker rmi -f ${imagename}:${BUILD_NUMBER}"
+                    sh "docker rmi -f ${imagename}:latest"
+                }
             }
         }
     }
@@ -105,14 +101,7 @@ pipeline {
                 )
                 echo "Response for success notification: ${response}"
             }
-            emailext(
-                to: 'khady.diagne@baamtu.com',
-                subject: "SonarQube Analysis Succeeded: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
-                body: """<p>La tâche SonarQube a réussi pour le projet ${SONAR_PROJECT_KEY}.</p>
-                         <p>Voir les résultats ici : ${SONAR_HOST_URL}dashboard?id=${SONAR_PROJECT_KEY}</p>"""
-            )
         }
-
         failure {
             script {
                 def response = httpRequest(
@@ -124,12 +113,6 @@ pipeline {
                 )
                 echo "Response for failure notification: ${response}"
             }
-            emailext(
-                to: 'khady.diagne@baamtu.com',
-                subject: "SonarQube Analysis Failed: ${env.JOB_NAME} Build #${env.BUILD_NUMBER}",
-                body: """<p>La tâche SonarQube a échoué pour le projet ${SONAR_PROJECT_KEY}.</p>
-                         <p>Voir les détails dans la console Jenkins.</p>"""
-            )
         }
     }
 }
