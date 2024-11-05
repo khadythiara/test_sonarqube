@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    imagename = "khadydiagne/sonar_jenkins"
+    imagename = "khadydiagne/k8s_jenkins"
     registryCredential = 'docker'
     dockerImage = ''
 
