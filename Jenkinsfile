@@ -19,6 +19,13 @@ pipeline {
 
       }
     }
+    stage('SonarQube analysis') {
+    steps {
+        withSonarQubeEnv('sonarqube') {
+            sh './mvnw sonar:sonar -Dsonar.projectKey=test_java -Dsonar.java.binaries=src'
+        }
+    }
+}
     stage('Building image') {
       steps{
         script {
@@ -30,14 +37,6 @@ pipeline {
     stage('Check target directory') {
     steps {
         sh 'ls -R target'
-    }
-}
-
-stage('SonarQube analysis') {
-    steps {
-        withSonarQubeEnv('sonarqube') {
-            sh './mvnw sonar:sonar -Dsonar.projectKey=test_java -Dsonar.java.binaries=target/sonar'
-        }
     }
 }
     stage('Push Image') {
@@ -56,7 +55,7 @@ stage('SonarQube analysis') {
           steps {
               script {
                     // Exécution du conteneur Docker
-                    dockerImage.run("-d -p 8086:8086")
+                    dockerImage.run("-d -p 8087:8087")
                 }
             }
         }
