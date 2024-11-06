@@ -45,7 +45,7 @@ pipeline {
     stage('Run Docker Container') {
       steps {
         script {
-          dockerImage.run("-d -p 8087:8087")
+          dockerImage.run("-d -p 8086:8086")
         }
       }
     }
