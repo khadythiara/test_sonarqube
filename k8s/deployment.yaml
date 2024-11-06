@@ -16,4 +16,4 @@ spec:
       - name: k8s-jenkins
         image: khadydiagne/k8s_jenkins:latest
         ports:
-        - containerPort: 8087
+        - containerPort: 8086
