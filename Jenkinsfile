@@ -2,63 +2,52 @@ pipeline {
   environment {
     imagename = "khadydiagne/k8s_jenkins"
     registryCredential = 'docker'
-    dockerImage = ''
-
- // Définir le nom du projet Sonar et les propriétés SonarQube
-        SONAR_PROJECT_KEY = 'test_java'
-        SONAR_HOST_URL = 'http://localhost:9000/'
-        SONAR_TOKEN = credentials('sonarqube') // Jeton d'accès SonarQube stocké dans Jenkins
-    
-    
+    SONAR_PROJECT_KEY = 'test_java'
+    SONAR_HOST_URL = 'http://192.168.230.128:9000'
+    SONAR_TOKEN = credentials('sonarqube') // Jeton d'accès SonarQube stocké dans Jenkins
   }
   agent any
   stages {
     stage('Cloning Git') {
       steps {
         git([url: 'https://github.com/khadythiara/test_sonarqube.git', branch: 'main'])
-
+        // Vérifiez la présence de `mvnw` et lui donner les permissions d'exécution
+        sh 'ls -l' // Lister les fichiers pour vérifier si `mvnw` est présent
+        sh 'chmod +x ./mvnw'
       }
     }
+
     stage('Building image') {
-      steps{
+      steps {
         script {
-          sh 'chmod +x ./mvnw'
           dockerImage = docker.build(imagename, ".")
         }
       }
     }
+
     stage('Check target directory') {
-    steps {
+      steps {
         sh 'ls -R target'
+      }
     }
-}
 
-stage('SonarQube analysis') {
-    steps {
-        withSonarQubeEnv('sonarqube') {
-            sh './mvnw sonar:sonar -Dsonar.projectKey=test_java -Dsonar.java.binaries=target/sonar'
-        }
-    }
-}
     stage('Push Image') {
-      steps{
+      steps {
         script {
-          docker.withRegistry( '', registryCredential ) {
+          docker.withRegistry('', registryCredential) {
             dockerImage.push("$BUILD_NUMBER")
-             dockerImage.push('latest')
-
+            dockerImage.push('latest')
           }
         }
       }
     }
- 
-     stage('Run Docker Container') {
-          steps {
-              script {
-                    // Exécution du conteneur Docker
-                    dockerImage.run("-d -p 8086:8086")
-                }
-            }
+
+    stage('Run Docker Container') {
+      steps {
+        script {
+          dockerImage.run("-d -p 8086:8086")
         }
+      }
+    }
   }
 }
