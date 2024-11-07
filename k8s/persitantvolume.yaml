@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: k8s-jenkins-pvc
+  name: k8s-app-pvc
 spec:
   accessModes:
   - ReadWriteOnce

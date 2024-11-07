@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: k8s-jenkins-service
+  name: k8s-app-service
 spec:
   selector:
-    app: k8s-jenkins
+    app: k8s-app
   ports:
     - protocol: TCP
       port: 80

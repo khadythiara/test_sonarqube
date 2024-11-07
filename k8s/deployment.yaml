@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name:  k8s-jenkins-deployment
+  name:  k8s-app-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: k8s-jenkins
+      app: k8s-app
   template:
     metadata:
       labels:
-        app: k8s-jenkins
+        app: k8s-app
     spec:
       containers:
-      - name: k8s-jenkins
-        image: khadydiagne/k8s_jenkins:latest
+      - name: k8s-app
+        image: khadydiagne/k8s_app:latest
         ports:
         - containerPort: 8086
