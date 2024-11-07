@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    imagename = "khadydiagne/k8s_jenkins"
+    imagename = "khadydiagne/k8s_app"
     registryCredential = 'docker'
     SONAR_PROJECT_KEY = 'test_java'
     SONAR_HOST_URL = 'http://192.168.230.128:9000'
@@ -45,7 +45,7 @@ pipeline {
     stage('Run Docker Container') {
       steps {
         script {
-          dockerImage.run("-d -p 8086:8086")
+          dockerImage.run("-name k8s_app -d -p 8086:8086")
         }
       }
     }
