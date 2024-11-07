@@ -45,7 +45,7 @@ pipeline {
     stage('Run Docker Container') {
       steps {
         script {
-          dockerImage.run("-name k8s_app -d -p 8086:8086")
+          dockerImage.run("--name k8s_app -d -p 8086:8086")
         }
       }
     }
