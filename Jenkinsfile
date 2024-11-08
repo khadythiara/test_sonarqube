@@ -34,16 +34,15 @@ pipeline {
       }
     }
 
-    stage('Deploy to Minikube') {
-      steps {
-        script {
-          
-            sh 'kubectl apply -f k8s/ '
-          
-        }
+stage('Deploy to Minikube') {
+  steps {
+    script {
+      withEnv(["KUBECONFIG=/var/lib/jenkins/.minikube/config"]) {
+        sh 'kubectl apply -f k8s/ '
       }
     }
-
+  }
+}
 
     stage('Verify Deployment') {
       steps {
