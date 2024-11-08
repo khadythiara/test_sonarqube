@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: "/"
 spec:
   rules:
-  - host: k8s-app.sn
+  - host: k8s-app.local
     http:
       paths:
       - path: /
@@ -16,5 +16,5 @@ spec:
           service:
             name: k8s-app-service
             port:
-              number: 8086 # Assurez-vous que cela correspond au port du service
+              number: 80 # Assurez-vous que cela correspond au port du service
 

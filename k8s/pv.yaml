@@ -1,0 +1,13 @@
+#PV pod
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: k8s-app-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data

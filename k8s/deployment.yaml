@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name:  k8s-app-deployment
+  name: k8s-app-deployment
 spec:
   replicas: 2
   selector:
@@ -13,7 +13,15 @@ spec:
         app: k8s-app
     spec:
       containers:
-      - name: k8s-app
-        image: khadydiagne/k8s_app:latest
-        ports:
-        - containerPort: 8086
+        - name: k8s-app
+          image: khadydiagne/k8s_app:latest
+          ports:
+            - containerPort: 8086
+          volumeMounts:
+            - mountPath: /data
+              name: storage-volume
+      volumes:
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: k8s-app-pvc
+
