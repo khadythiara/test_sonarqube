@@ -40,7 +40,7 @@ stage('Deploy to Minikube') {
       sh 'pwd'
       sh 'ls /var/lib/jenkins/workspace/test_k8S'
     withEnv(["KUBECONFIG=/home/khady/.minikube/config/config.json"]) {
-    sh 'kubectl apply -f /var/lib/jenkins/workspace/test_k8S/k8s/'
+    sh 'kubectl apply -f k8s/ --validate=false'
       }
     }
   }
