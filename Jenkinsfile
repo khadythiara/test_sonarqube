@@ -37,6 +37,8 @@ pipeline {
 stage('Deploy to Minikube') {
   steps {
     script {
+      sh 'pwd'
+      sh 'ls -l Desktop/sa-devops/k8s/'
     withEnv(["KUBECONFIG=/home/khady/.minikube/config/config.json"]) {
     sh 'kubectl apply -f Desktop/sa-devops/k8s/'
       }
