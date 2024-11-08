@@ -1,33 +1,26 @@
 pipeline {
   environment {
-    imagename = "khadydiagne/k8s_jenkins"
+    imagename = "khadydiagne/k8s_app"
     registryCredential = 'docker'
     SONAR_PROJECT_KEY = 'test_java'
     SONAR_HOST_URL = 'http://192.168.230.128:9000'
     SONAR_TOKEN = credentials('sonarqube') // Jeton d'accès SonarQube stocké dans Jenkins
+    KUBECONFIG = '/var/lib/jenkins/.kube/config'  // Chemin vers le fichier kubeconfig dans Jenkins
   }
   agent any
   stages {
     stage('Cloning Git') {
       steps {
         git([url: 'https://github.com/khadythiara/test_sonarqube.git', branch: 'main'])
-        // Vérifiez la présence de `mvnw` et lui donner les permissions d'exécution
-        sh 'ls -l' // Lister les fichiers pour vérifier si `mvnw` est présent
         sh 'chmod +x ./mvnw'
       }
     }
 
-    stage('Building image') {
+    stage('Building Image') {
       steps {
         script {
           dockerImage = docker.build(imagename, ".")
         }
-      }
-    }
-
-    stage('Check target directory') {
-      steps {
-        sh 'ls -R target'
       }
     }
 
@@ -42,12 +35,27 @@ pipeline {
       }
     }
 
-    stage('Run Docker Container') {
+stage('Deploy to Minikube') {
+  steps {
+     script {
+     // Exécuter la commande kubectl pour déployer
+     sh 'kubectl apply -f k8s/ --validate=false'
+    }
+  }
+}
+
+    stage('Verify Deployment') {
       steps {
         script {
-          dockerImage.run("-d -p 8086:8086")
+          // Vérifier que les ressources Kubernetes sont correctement déployées
+          sh 'kubectl get all -n default'
         }
       }
+    }
+  }
+  post {
+    always {
+      echo 'Pipeline terminé'
     }
   }
 }
