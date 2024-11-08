@@ -5,6 +5,7 @@ pipeline {
     SONAR_PROJECT_KEY = 'test_java'
     SONAR_HOST_URL = 'http://192.168.230.128:9000'
     SONAR_TOKEN = credentials('sonarqube') // Jeton d'accès SonarQube stocké dans Jenkins
+    KUBECONFIG = '/var/lib/jenkins/.kube/config'  // Chemin vers le fichier kubeconfig dans Jenkins
   }
   agent any
   stages {
