@@ -36,10 +36,9 @@ pipeline {
 
 stage('Deploy to Minikube') {
   steps {
-    script {
-    withEnv(["KUBECONFIG=/home/khady/.minikube/config/config.json"]) {
-    sh 'kubectl apply -f k8s/ --validate=false'
-      }
+     script {
+     // Exécuter la commande kubectl pour déployer
+     sh 'kubectl apply -f k8s/ --validate=false'
     }
   }
 }
