@@ -37,6 +37,8 @@ pipeline {
 stage('Deploy to Minikube') {
   steps {
     script {
+      sh 'kubectl config current-context'
+      
       withEnv(["KUBECONFIG=/var/lib/jenkins/.minikube/config"]) {
         sh 'kubectl apply -f k8s/ '
       }
