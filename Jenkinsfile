@@ -11,23 +11,15 @@ pipeline {
     stage('Cloning Git') {
       steps {
         git([url: 'https://github.com/khadythiara/test_sonarqube.git', branch: 'main'])
-        // Vérifiez la présence de `mvnw` et lui donner les permissions d'exécution
-        sh 'ls -l' // Lister les fichiers pour vérifier si `mvnw` est présent
         sh 'chmod +x ./mvnw'
       }
     }
 
-    stage('Building image') {
+    stage('Building Image') {
       steps {
         script {
           dockerImage = docker.build(imagename, ".")
         }
-      }
-    }
-
-    stage('Check target directory') {
-      steps {
-        sh 'ls -R target'
       }
     }
 
@@ -42,12 +34,27 @@ pipeline {
       }
     }
 
-    stage('Run Docker Container') {
+    stage('Deploy to Minikube') {
       steps {
         script {
-          dockerImage.run("--name k8s_app -d -p 8086:8086")
+          // Appliquer les fichiers de configuration Kubernetes
+          sh 'kubectl apply -f k8s/'
         }
       }
+    }
+
+    stage('Verify Deployment') {
+      steps {
+        script {
+          // Vérifier que les ressources Kubernetes sont correctement déployées
+          sh 'kubectl get all -n default'
+        }
+      }
+    }
+  }
+  post {
+    always {
+      echo 'Pipeline terminé'
     }
   }
 }
