@@ -48,7 +48,7 @@ pipeline {
       steps {
         script {
           // Mise à l'échelle des réplicas à 5
-          sh 'kubectl scale deployment k8s-app-deployment --replicas=5'
+          sh 'kubectl scale deployment k8s-app-deployment --replicas=3'
           // Vérification de la mise à l'échelle
           sh 'kubectl get pods -o wide'
         }
