@@ -16,10 +16,12 @@ spec:
         - name: k8s-app
           image: khadydiagne/k8s_app:latest
           resources:
-          requests:
-            cpu: 100m
-          limits:
-            cpu: 500m
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "512Mi"
           ports:
             - containerPort: 8086
           volumeMounts:
