@@ -15,6 +15,11 @@ spec:
       containers:
         - name: k8s-app
           image: khadydiagne/k8s_app:latest
+          resources:
+          requests:
+            cpu: 100m
+          limits:
+            cpu: 500m
           ports:
             - containerPort: 8086
           volumeMounts:
