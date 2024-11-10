@@ -51,6 +51,8 @@ stage('Deploy to Minikube') {
           sh 'kubectl get all -n default'
           sh 'kubectl get pv '
           sh 'kubectl get pvc '
+          sh 'kubectl get hpa '
+          sh 'kubectl get vpa '
         }
       }
     }
