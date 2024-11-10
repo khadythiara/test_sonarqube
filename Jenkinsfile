@@ -49,6 +49,8 @@ stage('Deploy to Minikube') {
         script {
           // Vérifier que les ressources Kubernetes sont correctement déployées
           sh 'kubectl get all -n default'
+          sh 'kubectl get pv '
+          sh 'kubectl get pvc '
         }
       }
     }
