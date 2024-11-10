@@ -49,10 +49,6 @@ pipeline {
         script {
           // Mise à l'échelle des réplicas à 5
           sh 'kubectl scale deployment k8s-app-deployment --replicas=5'
-          
-          // Créer un HPA qui scale un deployment en fonction de l'utilisation du CPU
-          sh 'kubectl autoscale deployment k8s-app-deployment --cpu-percent=50 --min=1 --max=6'
-          
           // Vérification de la mise à l'échelle
           sh 'kubectl get pods -o wide'
         }
