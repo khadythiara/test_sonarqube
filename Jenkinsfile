@@ -35,21 +35,24 @@ pipeline {
       }
     }
 
-stage('Deploy to Minikube') {
-  steps {
-     script {
-     // Exécuter la commande kubectl pour déployer
-     sh 'kubectl apply -f k8s/ --validate=false'
+    stage('Deploy to Minikube') {
+      steps {
+        script {
+          // Exécuter la commande kubectl pour déployer
+          sh 'kubectl apply -f k8s/ --validate=false'
+        }
+      }
     }
-  }
-}
-stage('Scale Deployment') {
+
+    stage('Scale Deployment') {
       steps {
         script {
           // Mise à l'échelle des réplicas à 5
           sh 'kubectl scale deployment k8s-app-deployment --replicas=5'
-          //créer un HPA qui scale un deployment en fonction de l'utilisation du CPU 
-          kubectl autoscale deployment k8s-app-deployment --cpu-percent=50 --min=1 --max=5
+          
+          // Créer un HPA qui scale un deployment en fonction de l'utilisation du CPU
+          sh 'kubectl autoscale deployment k8s-app-deployment --cpu-percent=50 --min=1 --max=5'
+          
           // Vérification de la mise à l'échelle
           sh 'kubectl get pods -o wide'
         }
@@ -61,24 +64,27 @@ stage('Scale Deployment') {
         script {
           // Affichage des métriques de ressources
           sh 'kubectl top pods'
+          
           // Optionnel : vérifier l'état de la charge sur les nœuds
           sh 'kubectl top nodes'
         }
       }
     }
+
     stage('Verify Deployment') {
       steps {
         script {
           // Vérifier que les ressources Kubernetes sont correctement déployées
           sh 'kubectl get all -n default'
-          sh 'kubectl get pv '
-          sh 'kubectl get pvc '
-          sh 'kubectl get hpa '
-          sh 'kubectl get vpa '
+          sh 'kubectl get pv'
+          sh 'kubectl get pvc'
+          sh 'kubectl get hpa'
+          sh 'kubectl get vpa'
         }
       }
     }
   }
+
   post {
     always {
       echo 'Pipeline terminé'
