@@ -1,0 +1,56 @@
+# Deployment configuration
+appName: k8s-app
+replicaCount: 2
+containerName: k8s-app
+image:
+  repository: khadydiagne/k8s_app
+  tag: latest
+containerPort: 8086
+resources:
+  requests:
+    cpu: "50m"
+    memory: "128Mi"
+  limits:
+    cpu: "200m"
+    memory: "512Mi"
+volume:
+  name: storage-volume
+  mountPath: /data
+  persistentVolumeClaim: k8s-app-pvc
+
+# Service configuration
+service:
+  name: k8s-app-service  # Nom du service à exposer dans l'Ingress
+  port: 80
+  targetPort: 8086
+  type: ClusterIP
+
+# Ingress configuration
+ingress:
+  class: "nginx" # Ajouter la classe ingress ici
+  rewriteTarget: "/"
+  host: k8s-app.local
+  path: /
+  pathType: Prefix
+
+# Persistent Volume configuration
+pv:
+  name: k8s-app-pv
+  capacity: 1Gi
+  accessMode: ReadWriteOnce
+  reclaimPolicy: Retain
+  hostPath: /mnt/data
+
+# Persistent Volume Claim configuration
+pvc:
+  name: k8s-app-pvc
+  accessMode: ReadWriteOnce
+  storage: 1Gi
+
+# HPA configuration
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
