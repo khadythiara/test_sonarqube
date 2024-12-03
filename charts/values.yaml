@@ -48,7 +48,8 @@ pvc:
   storage: 1Gi
 
 # HPA configuration
-appName: k8s-app-deployment-deployment
+appName: k8s-app-deployment  # Nom du déploiement exact
+
 hpa:
   minReplicas: 2
   maxReplicas: 10
