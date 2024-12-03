@@ -6,15 +6,15 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/khadythiara/test_sonarqube.git  # URL de votre dépôt
-    targetRevision: main  # Branche à vérifier dans votre dépôt
-    chart: Desktop/sa-devops/charts  # Assurez-vous que le chart est dans le dossier 'charts', sinon modifiez ce chemin
+    repoURL: https://github.com/khadythiara/test_sonarqube.git
+    targetRevision: main
+    path: charts  # Assurez-vous que le chart est dans le dossier 'charts'
     helm:
       valueFiles:
-        - values.yaml  # Vérifiez que ce fichier existe et est dans le bon emplacement
+        - values.yaml  # Vérifiez que ce fichier existe et est dans le bon répertoire
   destination:
     server: https://kubernetes.default.svc
-    namespace: k8s-app-namespace  # Namespace où déployer l'application
+    namespace: default
   syncPolicy:
     automated:
       prune: true

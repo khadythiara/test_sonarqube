@@ -48,10 +48,8 @@ pvc:
   storage: 1Gi
 
 # HPA configuration
-appName: k8s-app-deployment  # Doit correspondre exactement au nom du déploiement
+appName: k8s-app-deployment
 hpa:
-  enabled: true
   minReplicas: 2
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80
-
