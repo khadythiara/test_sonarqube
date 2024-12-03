@@ -1,5 +1,5 @@
 apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
+kind: 
 metadata:
   name: {{ .Values.appName }}-hpa
   namespace: default
