@@ -34,18 +34,6 @@ pipeline {
         }
       }
     }
-stage('Cleanup Docker') {
-  steps {
-    script {
-      // Supprimer l'image locale avec le tag spécifique et 'latest'
-      sh 'docker rmi khadydiagne/k8s_app:$BUILD_NUMBER'
-      sh 'docker rmi khadydiagne/k8s_app:latest'
-      
-      // Supprimer les images dangling (<none>)
-      sh 'docker image prune -f'
-    }
-  }
-}
 
    stage('ArgoCD Deployment') {
       steps {
