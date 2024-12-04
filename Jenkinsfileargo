@@ -34,8 +34,20 @@ pipeline {
         }
       }
     }
+stage('Cleanup Docker') {
+  steps {
+    script {
+      // Supprimer l'image locale avec le tag spécifique et 'latest'
+      sh 'docker rmi khadydiagne/k8s_app:57'
+      sh 'docker rmi khadydiagne/k8s_app:latest'
+      
+      // Supprimer les images dangling (<none>)
+      sh 'docker image prune -f'
+    }
+  }
+}
 
-        stage('ArgoCD Deployment') {
+   stage('ArgoCD Deployment') {
       steps {
         script {
           sh 'kubectl apply -f argocd_deploy.yaml '
@@ -80,9 +92,13 @@ pipeline {
     }
   }
 
-  post {
-    always {
-      echo 'Pipeline terminé'
+ post {
+  always {
+    script {
+      sh 'kubectl delete pods --field-selector=status.phase=Succeeded'
     }
+    echo 'Pipeline terminé et nettoyage effectué'
   }
+}
+
 }
