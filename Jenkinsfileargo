@@ -38,7 +38,7 @@ pipeline {
    stage('ArgoCD Deployment') {
       steps {
         script {
-          sh 'kubectl apply -f argocd_deploy.yaml '
+          sh 'kubectl apply -f argocd_deploy.yaml --validate=false '
         }
     }
   }
