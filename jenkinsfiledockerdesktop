@@ -42,18 +42,6 @@ pipeline {
         }
       }
     }
-
-    stage('Scale Deployment') {
-      steps {
-        script {
-          // Mise à l'échelle des réplicas à 3
-          bat 'kubectl scale deployment k8s-app-deployment --replicas=3'
-          // Vérification de la mise à l'échelle
-          bat 'kubectl get pods -o wide'
-        }
-      }
-    }
-
     stage('Monitor Scaling') {
       steps {
         script {
