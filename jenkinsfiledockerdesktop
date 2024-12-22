@@ -5,14 +5,17 @@ pipeline {
     //SONAR_PROJECT_KEY = 'test_java'
     //SONAR_HOST_URL = 'http://192.168.230.128:9000'
     //SONAR_TOKEN = credentials('sonarqube') // Jeton d'accès SonarQube stocké dans Jenkins
-    KUBECONFIG = 'C:\\jenkins\\.kube\\config'  // Chemin vers le fichier kubeconfig sur Windows
+    KUBECONFIG = 'environment {
+  KUBECONFIG = 'C:\\Users\\KHADY\\.kube\\config'  // Chemin vers le fichier kubeconfig généré par Docker Desktop
+}
+'  // Chemin vers le fichier kubeconfig sur Windows
   }
   agent any
   stages {
     stage('Cloning Git') {
       steps {
         git([url: 'https://github.com/khadythiara/test_sonarqube.git', branch: 'main'])
-        bat 'chmod +x ./mvnw'  // Utilisation de 'bat' pour exécuter une commande sous Windows
+        //bat 'chmod +x ./mvnw'  // Utilisation de 'bat' pour exécuter une commande sous Windows
       }
     }
 
