@@ -78,13 +78,4 @@ pipeline {
       }
     }
   }
-
-  post {
-    always {
-      script {
-        bat 'kubectl delete pods --field-selector=status.phase=Succeeded'
-      }
-      echo 'Pipeline terminé et nettoyage effectué'
-    }
-  }
 }
