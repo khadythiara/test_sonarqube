@@ -9,7 +9,7 @@ services:
     ports:
       - "8086:8086"
     networks:
-      - test_newman-network
+      - app-network
 
   # Service pour exécuter les tests Postman avec Newman
   newman:
@@ -20,7 +20,7 @@ services:
     depends_on:
       - test_newman
     networks:
-      - test_newman-network
+      -app-network
 
 networks:
   app-network:
