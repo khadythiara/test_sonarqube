@@ -14,7 +14,7 @@
 				},
 				"method": "GET",
 				"header": [],
-				"url": "http://localhost:8086/sa"
+				"url": "{{BASE_URL}}/sa\n"
 			},
 			"response": []
 		}
