@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   # Service pour construire et exécuter l'application Java
-  app:
+  test_newman:
     build:
       context: .
       dockerfile: Dockerfile
@@ -18,7 +18,7 @@ services:
       - ./tests:/tests # Le dossier 'tests' sur votre machine hôte est monté dans le conteneur
     entrypoint: /bin/bash -c "apt-get update && apt-get install -y curl && curl -sL https://github.com/vishnubob/wait-for-it/raw/master/wait-for-it.sh -o /wait-for-it.sh && chmod +x /wait-for-it.sh && /wait-for-it.sh app:8086 -- newman run /tests/Newman_collection.json --env-var 'BASE_URL=http://app:8086'"
     depends_on:
-      - app
+      - test_newman
     networks:
       - app-network
 
