@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # Service pour construire et exécuter l'application Java
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8086:8086"
+    networks:
+      - app-network
+
+  # Service pour exécuter les tests Postman avec Newman
+  newman:
+    image: postman/newman_ubuntu1404
+    volumes:
+      - ./tests:/tests # Le dossier 'tests' sur votre machine hôte est monté dans le conteneur
+    command: run /tests/Newman_collection.json --env-var "BASE_URL=http://app:8086" # Le fichier de collection exporté est accessible dans le conteneur
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
